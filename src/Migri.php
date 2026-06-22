@@ -1,5 +1,5 @@
 <?php
-namespace Djabeu\Migri;
+namespace SinusPi\Migri;
 
 /**
  * One-shot schema management library.
@@ -68,7 +68,7 @@ class Migri {
 		// Get current version
 		$current_version = $this->getCurrentVersion($table_name);
 
-		if ($current_version === -1) { // no version, assume v1
+		if ($current_version === -1) { // table present, but no version - assume v1 just unstamped yet, stamp it with v1 and go from there
 			$current_version = 1;
 			$this->updateVersion($table_name, $current_version);
 		}
@@ -271,7 +271,7 @@ class Migri {
 		$current_comment = $this->getComment($table_name) ?: '';
 
 		// Update or add version marker
-		if (!preg_match('/' . self::COMMENT_VERSION_MARKER . '\d+/', $current_comment)) {
+		if (preg_match('/' . self::COMMENT_VERSION_MARKER . '\d+/', $current_comment)) {
 			$new_comment = preg_replace('/' . self::COMMENT_VERSION_MARKER . '\d+/', self::COMMENT_VERSION_MARKER . $version, $current_comment);
 		} else {
 			$separator = $current_comment ? '; ' : '';
