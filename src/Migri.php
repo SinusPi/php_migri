@@ -2,21 +2,22 @@
 namespace SinusPi\Migri;
 
 /**
- * One-shot schema management library.
+ * Simple schema migration library.
  * Manages table creation and versioned migrations with version tracking in table comments.
  * $db may be a MySQLi or PDO connection object. 
  * Migrations are defined as an associative array where keys define version states ("N" for CREATE TABLE) and transitions ("N>M" for ALTER TABLE).
  * 
  * Usage:
- *   new Migri($db)->manageTable("users", [
+ *   $db = new \mysqli(...); // or new \PDO(...)
+ *   new \SinusPi\Migri\Migri($db)->manageTable("users", [
  *       "1" => "CREATE TABLE users (...)",
- *       "1>2" => "ALTER TABLE users ADD COLUMN ...",
- *       "2>3" => "ALTER TABLE users ADD COLUMN ...",
- *       "3" => "CREATE TABLE users (...)",  // Reset point for fresh installs
- *       "3>4" => "ALTER TABLE users ADD COLUMN ...",
+ *       "1>2" => "ALTER TABLE <TABLE> ADD COLUMN ...",
+ *       "2>3" => "ALTER TABLE <TABLE> ADD COLUMN ...",
+ *       "3" => "CREATE TABLE <TABLE> (...)",  // Reset point for fresh installs
+ *       "3>4" => "ALTER TABLE <TABLE> ADD COLUMN ...",
  *   ]);
  * 
- * All intermediate steps must be defined. Missing a step in the sequence throws an error.
+ * All intermediate steps must be defined. Missing a step in the sequence throws an error. Optionally, use <TABLE> placeholder to avoid repetition of table name.
  * 
  * Compatible with PHP 5.6+.
  */
@@ -61,6 +62,11 @@ class Migri {
 		} elseif (!$migrations || !is_array($migrations)) {
 			throw new \InvalidArgumentException("Migrations must be a string or an array of migration definitions");
 		}
+
+		if (!preg_match('/^[A-Za-z0-9_]+$/', $table_name)) {
+			throw new \InvalidArgumentException("Invalid table name '$table_name'. Only alphanumeric and underscore characters are allowed.");
+		}
+		$migrations = str_replace("<TABLE>", $table_name, $migrations);
 
 		// Parse migration definitions
 		list($states, $transitions, $max_reset, $max_version) = $this->parseStatesAndTransitions($migrations);
@@ -218,8 +224,6 @@ class Migri {
 	 * @throws \Exception On failure
 	 */
 	private function setComment($table_name, $comment) {
-		if (!preg_match('/^[A-Za-z0-9_]+$/', $table_name))
-			throw new \InvalidArgumentException("Invalid table name '$table_name'. Only alphanumeric and underscore characters are allowed.");
 		if ($this->mysqli_conn) {
 			$new_comment_escaped = $this->mysqli_conn->real_escape_string($comment);
 			$alter_query = "ALTER TABLE `{$table_name}` COMMENT = '{$new_comment_escaped}'";
