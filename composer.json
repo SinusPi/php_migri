@@ -13,5 +13,7 @@
             "email": "sinus@sinpi.net"
         }
     ],
-    "require": {}
+    "require": {
+	"php": ">5.6",
+    }
 }
