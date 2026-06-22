@@ -1,0 +1,17 @@
+{
+    "name": "djabeu/migri",
+    "description": "Lightweight DB migration lib",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Djabeu\\Migri\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sinus",
+            "email": "sinus@sinpi.net"
+        }
+    ],
+    "require": {}
+}
