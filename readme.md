@@ -18,8 +18,11 @@ new \SinusPi\Migri\Migri($db)
 	->manageTable("widgets", [
 		"1" => "CREATE TABLE <TABLE> (...)"
 	])
+	;
 ```
 
-All intermediate steps must be defined. Missing a step in the sequence throws an error. Optionally, use <TABLE> placeholder to avoid repetition of table name.
+*All* intermediate steps *must* be defined. Missing a step in the sequence throws an error.
+
+Optionally, use `<TABLE>` placeholder to avoid repetition of table name.
  
-Compatible with PHP 5.6+.
+Compatible with PHP 5.6+, \mysqli and \PDO.
