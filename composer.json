@@ -1,7 +1,9 @@
 {
     "name": "sinuspi/migri",
     "version": "1.0.0",
+    "stability": "stable",
     "description": "Lightweight DB migration lib",
+    "readme": "readme.md",
     "type": "library",
     "license": "MIT",
     "autoload": {

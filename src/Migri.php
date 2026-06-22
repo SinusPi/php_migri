@@ -1,26 +1,6 @@
 <?php
 namespace SinusPi\Migri;
 
-/**
- * Simple schema migration library.
- * Manages table creation and versioned migrations with version tracking in table comments.
- * $db may be a MySQLi or PDO connection object. 
- * Migrations are defined as an associative array where keys define version states ("N" for CREATE TABLE) and transitions ("N>M" for ALTER TABLE).
- * 
- * Usage:
- *   $db = new \mysqli(...); // or new \PDO(...)
- *   new \SinusPi\Migri\Migri($db)->manageTable("users", [
- *       "1" => "CREATE TABLE users (...)",
- *       "1>2" => "ALTER TABLE <TABLE> ADD COLUMN ...",
- *       "2>3" => "ALTER TABLE <TABLE> ADD COLUMN ...",
- *       "3" => "CREATE TABLE <TABLE> (...)",  // Reset point for fresh installs
- *       "3>4" => "ALTER TABLE <TABLE> ADD COLUMN ...",
- *   ]);
- * 
- * All intermediate steps must be defined. Missing a step in the sequence throws an error. Optionally, use <TABLE> placeholder to avoid repetition of table name.
- * 
- * Compatible with PHP 5.6+.
- */
 class Migri {
 	/** @var \mysqli|null */
 	private $mysqli_conn = null;
